@@ -1,0 +1,112 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../keyword-selector/keyword-selector.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <ploz-app></ploz-app>
+
+@element ploz-app
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://polymerlabs.github.io/ploz-app
+-->
+<polymer-element name="ploz-app" attributes="notitle author">
+
+  <template>
+
+    <link rel="stylesheet" href="ploz-app.css" />
+
+    <h1>Make a ploz</h1>
+    <content>
+      <core-ajax
+        auto
+        id="request"
+        url="http://localhost:3000/api/aploz/count"
+        params='{"alt":"json", "q":"chrome"}'
+        handleAs="json"
+        on-core-response="{{handleResponse}}"></core-ajax>
+
+      <paper-input></paper-input><paper-button raised>send</paper-button>
+
+      <span>You have {{count}} micro-accomplishments</span>
+
+      <keyword-selector></keyword-selector>
+    </content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Dimitri Glazkov'
+       */
+      author: 'Dimitri Glazkov',
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+      fancy: false,
+
+      ready: function() {
+        this.$.request.go();
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+      },
+
+      /**
+       * The `sayHello` method will return a greeting.
+       *
+       * @method sayHello
+       * @param {String} greeting Pass in a specific greeting.
+       * @return {String} Returns a string greeting.
+       */
+      sayHello: function(greeting) {
+        var response = greeting || 'Hello World!';
+        return 'ploz-app says, ' + response;
+      },
+
+
+      handleResponse: function(data) {
+        console.log(data)
+        this.count = data.count;
+      },
+
+      /**
+       * The `ploz-app-lasers-success` event is fired whenever we
+       * call fireLasers.
+       *
+       * @event ploz-app-lasers-success
+       * @param {Object} detail
+       *   @param {string} detail.sound An amazing sound.
+       */
+
+      /**
+       * The `fireLasers` method will fire the lasers. At least
+       * it will dispatch an event that claims lasers were fired :)
+       *
+       * @method fireLasers
+       */
+      fireLasers: function() {
+        this.fire('ploz-app-lasers-success', { sound: 'Pew pew pew!' });
+      }
+
+    });
+
+  </script>
+
+</polymer-element>
